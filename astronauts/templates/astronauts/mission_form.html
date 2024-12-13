@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ mission.name|default:"New Mission" }}</title>
+    <style>
+        body {
+            background-color: #1e1e1e; /* Black background */
+            color: #f5f5dc; /* Mousse-colored text */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #ffcc99; /* Light mousse */
+        }
+        form {
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #292929; /* Form background */
+            border: 1px solid #555; /* Border for the form */
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(255, 204, 153, 0.5);
+        }
+        form input, form textarea, form select {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #444; /* Input borders */
+            border-radius: 4px;
+            background-color: #333; /* Input background */
+            color: #f5f5dc; /* Input text color */
+        }
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #444; /* Button background */
+            color: #f5f5dc; /* Button text */
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #ffcc99; /* Highlighted button */
+            color: #1e1e1e; /* Black text on hover */
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navigation a {
+            text-decoration: none;
+            color: #f5f5dc; /* Links color */
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .navigation a:hover {
+            color: #ffcc99; /* Highlighted link color */
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ mission.name|default:"New Mission" }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <div class="navigation">
+        <a href="{% url 'mission_list' %}">Cancel</a>
+    </div>
+</body>
+</html>

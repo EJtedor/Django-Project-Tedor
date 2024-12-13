@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission List</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Include your styles here for navbar, sidebar, and content */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: #1e1e1e;
+            border-bottom: 2px solid #4CAF50;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 800;
+        }
+
+        .navbar h1 {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+        }
+
+        .navbar form button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #292929;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #e0e0e0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 64px;
+            padding: 1rem;
+        }
+
+        .missions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mission-item {
+            padding: 1rem;
+            background-color: #292929;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mission-item:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .mission-actions a {
+            color: #e0e0e0;
+            margin-right: 1rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .mission-actions a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <h1>Mission List</h1>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <a href="#" title="Dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="{% url 'missions_list' %}" title="Missions"><i class="fas fa-rocket"></i> Missions</a>
+        <a href="#" title="Performance"><i class="fas fa-chart-line"></i> Performance</a>
+        <a href="{% url 'bmi_records' %}" title="BMI Records"><i class="fas fa-heartbeat"></i> BMI Records</a>
+        <a href="#" title="Settings"><i class="fas fa-cogs"></i> Settings</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Mission List</h2>
+        <div class="missions-container">
+            {% for mission in missions %}
+            <div class="mission-item">
+                <div>
+                    <h3>{{ mission.name }}</h3>
+                    <p>{{ mission.description }}</p>
+                </div>
+                <div class="mission-actions">
+                    <a href="{% url 'mission_detail' mission.pk %}">View</a>
+                    <a href="{% url 'mission_update' mission.pk %}">Edit</a>
+                    <a href="{% url 'mission_delete' mission.pk %}">Delete</a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No missions available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

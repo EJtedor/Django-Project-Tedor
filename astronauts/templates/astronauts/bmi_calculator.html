@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI & Health Metrics Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .bmi-calculator, .results-container {
+            background-color: #292929;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 400px;
+        }
+        .bmi-calculator h1, .results-container h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            margin-bottom: 15px;
+            background-color: #121212;
+            color: #e0e0e0;
+            border: 1px solid #4CAF50;
+        }
+        .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .results-container {
+            display: none; /* Initially hidden */
+            width: 900px;
+        }
+        .results-container table {
+            width: 900px;
+            margin-top: 10px;
+            color: #e0e0e0;
+        }
+        .results-container table th, .results-container table td {
+            padding: 8px;
+            text-align: left;
+        }
+        .results-container table th {
+            color: #4CAF50;
+        }
+        .remarks {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Input Section -->
+        <div class="bmi-calculator">
+            <h1>BMI & Health Metrics</h1>
+            <input type="number" id="weight" class="form-control" placeholder="Weight (kg)" required>
+            <input type="number" id="height" class="form-control" placeholder="Height (cm)" required>
+            <div class="form-group">
+                <h3>Additional Health Metrics</h3>
+                <input type="number" id="oxygen" class="form-control" placeholder="Oxygen Level (%)" required>
+                <input type="number" id="glycerol" class="form-control" placeholder="Glycerol Level (mg/dL)" required>
+                <input type="number" id="calories" class="form-control" placeholder="Calories Intake (kcal/day)" required>
+                <input type="number" id="stool" class="form-control" placeholder="Daily Stool (grams)" required>
+                <input type="number" id="water" class="form-control" placeholder="Water Intake (ml/day)" required>
+            </div>
+            <button class="btn btn-success" onclick="calculateMetrics()">Calculate</button>
+        </div>
+        
+        <!-- Results Section -->
+<div class="results-container" id="results-container">
+    <h2>Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Input</th>
+                <th>Reference</th>
+            </tr>
+        </thead>
+        <tbody id="results-table">
+            <!-- Dynamic results will be appended here -->
+        </tbody>
+    </table>
+    <div class="remarks" id="remarks"></div>
+    
+    <!-- Form to save records -->
+    <form id="save-records-form" action="{% url 'save_records' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="weight" id="form-weight">
+        <input type="hidden" name="height" id="form-height">
+        <input type="hidden" name="oxygen" id="form-oxygen">
+        <input type="hidden" name="glycerol" id="form-glycerol">
+        <input type="hidden" name="calories" id="form-calories">
+        <input type="hidden" name="stool" id="form-stool">
+        <input type="hidden" name="water" id="form-water">
+
+        <div class="action-buttons">
+            <button type="button" class="btn btn-warning" onclick="eraseRecords()">Erase Records</button>
+            <button type="submit" class="btn btn-primary">Save Records</button>
+        </div>
+    </form>
+</div>
+
+
+    <script>
+        function calculateMetrics() {
+            // Get inputs
+            const weight = document.getElementById('weight').value || '-';
+            const height = document.getElementById('height').value || '-';
+            const oxygen = document.getElementById('oxygen').value || '-';
+            const glycerol = document.getElementById('glycerol').value || '-';
+            const calories = document.getElementById('calories').value || '-';
+            const stool = document.getElementById('stool').value || '-';
+            const water = document.getElementById('water').value || '-';
+
+            const bmi = weight && height ? (weight / ((height / 100) ** 2)).toFixed(2) : '-';
+            
+            // Populate hidden form fields
+            document.getElementById('form-weight').value = weight;
+            document.getElementById('form-height').value = height;
+            document.getElementById('form-oxygen').value = oxygen;
+            document.getElementById('form-glycerol').value = glycerol;
+            document.getElementById('form-calories').value = calories;
+            document.getElementById('form-stool').value = stool;
+            document.getElementById('form-water').value = water;
+            
+            // Submit the form
+                document.getElementById('save-records-form').submit();
+        
+            function eraseRecords() {
+                // Clear the results table and remarks
+                document.getElementById('results-table').innerHTML = '';
+                document.getElementById('remarks').innerText = '';
+
+                // Clear input fields
+                document.getElementById('weight').value = '';
+                document.getElementById('height').value = '';
+                document.getElementById('oxygen').value = '';
+                document.getElementById('glycerol').value = '';
+                document.getElementById('calories').value = '';
+                document.getElementById('stool').value = '';
+                document.getElementById('water').value = '';
+            }
+
+            // Display results container
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.style.display = 'block';
+
+            // Render results
+            const resultsTable = document.getElementById('results-table');
+            resultsTable.innerHTML = `
+                <tr><td>Weight</td><td>${weight} kg</td><td>-</td></tr>
+                <tr><td>Height</td><td>${height} cm</td><td>-</td></tr>
+                <tr><td>Oxygen Level</td><td>${oxygen}%</td><td>95-100%</td></tr>
+                <tr><td>Glycerol Level</td><td>${glycerol} mg/dL</td><td>50-200 mg/dL</td></tr>
+                <tr><td>Calories Intake</td><td>${calories} kcal/day</td><td>1800-2500 kcal/day</td></tr>
+                <tr><td>Daily Stool</td><td>${stool} grams</td><td>100-200 grams/day</td></tr>
+                <tr><td>Water Intake</td><td>${water} ml/day</td><td>2000+ ml/day</td></tr>
+                <tr><td>Your BMI</td><td>${bmi}</td><td>-</td></tr>
+            `;
+
+            // Generate remarks
+            let remarks = 'Final Remark: ';
+            remarks += bmi >= 18.5 && bmi <= 24.9 ? 'Fit to work.' : 'Seek medical approval.';
+            document.getElementById('remarks').innerText = remarks;
+        }
+
+        function eraseRecords() {
+            // Clear all input fields
+            document.querySelectorAll('.form-control').forEach(input => input.value = '');
+            // Hide results
+            document.getElementById('results-container').style.display = 'none';
+        }
+
+        function saveRecords() {
+            // Save logic placeholder
+            alert('Records saved successfully!');
+        }
+    </script>
+</body>
+</html>

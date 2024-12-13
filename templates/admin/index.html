@@ -1,0 +1,161 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+    <style>
+        /* Styling the main content area */
+        #content-main {
+            background-color: #f7f8fa; /* Mousse-like background */
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+        }
+
+        /* Styling the sidebar */
+        #content-related {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #content-related h2 {
+            color: #000000; /* Black header */
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .actionlist li {
+            list-style-type: none;
+            margin: 10px 0;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #fafafa;
+            border-radius: 8px;
+        }
+
+        .actionlist li:hover {
+            background-color: #f0f0f0; /* Hover effect */
+        }
+
+        .actionlist li a {
+            color: #000000; /* Black links */
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .actionlist li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Customizing Recent Actions section */
+        #recent-actions-module {
+            background-color: #eef1f5; /* Subtle mousse tone */
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #recent-actions-module h3 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        /* Navigation bar customization */
+        #header {
+            background-color: #2d2d2d; /* Black navigation bar */
+            color: #ffffff;
+            padding: 15px 20px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        #header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        #header a {
+            color: #4CAF50; /* Accent color for links */
+            text-decoration: none;
+        }
+
+        #header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer customization */
+        #footer {
+            background-color: #2d2d2d; /* Black footer */
+            color: #ffffff;
+            padding: 10px 20px;
+            text-align: center;
+            border-top: 2px solid #4CAF50;
+            margin-top: 20px;
+        }
+
+        #footer a {
+            color: #4CAF50; /* Accent color */
+            text-decoration: none;
+        }
+
+        #footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="recent-actions-module">
+        <h2>{% translate 'Recent actions' %}</h2>
+        <h3>{% translate 'My actions' %}</h3>
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+            <p>{% translate 'None available' %}</p>
+            {% else %}
+            <ul class="actionlist">
+            {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                <span class="visually-hidden">{% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}</span>
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                    {{ entry.object_repr }}
+                {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+                <br>
+                {% if entry.content_type %}
+                    <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+                {% else %}
+                    <span class="mini quiet">{% translate 'Unknown content' %}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+    </div>
+</div>
+{% endblock %}

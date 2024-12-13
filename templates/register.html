@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2c2c2c, #ffeadb); /* Gradient background */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            position: relative; /* For positioning the back button */
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #333333; /* Black container */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+            color: #f4f1ee; /* Mousse text color */
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Position on the left side */
+            font-size: 1.5rem;
+            color: #f4f1ee; /* Mousse-colored arrow */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .back-arrow:hover {
+            color: #ffeadb; /* Light hover effect */
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f4f1ee; /* Mousse-colored text for the heading */
+        }
+
+        form .form-control {
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffffff; /* White input fields */
+            color: #333; /* Dark text for input fields */
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        form .form-control:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        label {
+            color: #f4f1ee; /* Mousse-colored labels */
+        }
+
+        button {
+            background-color: #007BFF; /* Primary button color */
+            color: #ffffff; /* White button text */
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .optional {
+            font-size: 0.9rem;
+            color: #d3d3d3; /* Lighter mousse for optional labels */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/login/" class="back-arrow" title="Back to Login">&larr;</a>
+        <h1>Register</h1>
+        <form id="registerForm">
+            <div class="mb-3">
+                <label for="id_first_name" class="form-label">First Name:</label>
+                <input type="text" name="first_name" class="form-control" id="id_first_name" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_middle_name" class="form-label">Middle Name:</label>
+                <input type="text" name="middle_name" class="form-control" id="id_middle_name">
+            </div>
+            <div class="mb-3">
+                <label for="id_last_name" class="form-label">Last Name:</label>
+                <input type="text" name="last_name" class="form-control" id="id_last_name" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_suffix" class="form-label optional">Suffix (Optional):</label>
+                <input type="text" name="suffix" class="form-control" id="id_suffix">
+            </div>
+            <div class="mb-3">
+                <label for="id_birthdate" class="form-label">Birthdate:</label>
+                <input type="date" name="birthdate" class="form-control" id="id_birthdate" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_city" class="form-label">City:</label>
+                <input type="text" name="city" class="form-control" id="id_city" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_zip" class="form-label">Zip Code:</label>
+                <input type="text" name="zip" class="form-control" id="id_zip" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_station" class="form-label">Station Assigned:</label>
+                <input type="text" name="station" class="form-control" id="id_station" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Password:</label>
+                <input type="password" name="password1" class="form-control" id="id_password1" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirm Password:</label>
+                <input type="password" name="password2" class="form-control" id="id_password2" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
+    
+
+    <script>
+        const password1Input = document.getElementById("password1");
+        const password2Input = document.getElementById("password2");
+        const passwordLength = document.getElementById("passwordLength");
+        const passwordSpecial = document.getElementById("passwordSpecial");
+        const passwordMatch = document.getElementById("passwordMatch");
+        const passwordConfirmFeedback = document.getElementById("passwordConfirmFeedback");
+
+        password1Input.addEventListener("input", () => {
+            const value = password1Input.value;
+            const hasLength = value.length >= 8;
+            const hasSpecial = /[\d!@#$%^&*]/.test(value);
+            const notCommon = value !== "password";
+
+            passwordLength.style.display = hasLength ? "none" : "block";
+            passwordSpecial.style.display = hasSpecial ? "none" : "block";
+            passwordMatch.style.display = notCommon ? "none" : "block";
+        });
+
+        password2Input.addEventListener("input", () => {
+            if (password2Input.value !== password1Input.value) {
+                passwordConfirmFeedback.textContent = "Passwords do not match.";
+                passwordConfirmFeedback.classList.add("invalid-feedback");
+                passwordConfirmFeedback.style.display = "block";
+            } else {
+                passwordConfirmFeedback.textContent = "Passwords match!";
+                passwordConfirmFeedback.classList.remove("invalid-feedback");
+                passwordConfirmFeedback.classList.add("valid-feedback");
+                passwordConfirmFeedback.style.display = "block";
+            }
+        });
+
+        const registerForm = document.getElementById("registerForm");
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            alert("Form submitted successfully!");
+        });
+    </script>
+</body>
+</html>

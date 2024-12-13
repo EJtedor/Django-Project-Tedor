@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI Records</title>
+    <style>
+        body {
+            background-color: #1e1e1e; /* Black background */
+            color: #f5f5dc; /* Mousse-colored text */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #ffcc99; /* Light mousse */
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background-color: #333; /* Dark gray */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        nav a {
+            text-decoration: none;
+            color: #f5f5dc; /* Mousse-colored links */
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #ffcc99; /* Highlighted link color */
+        }
+        .record-container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #292929; /* Slightly lighter background for contrast */
+            border: 1px solid #555; /* Border for box */
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(255, 204, 153, 0.5);
+        }
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #444; /* Divider between records */
+        }
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        .record-info {
+            font-size: 16px;
+        }
+        a.create-record {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #444; /* Button background */
+            color: #f5f5dc; /* Button text */
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: fit-content;
+        }
+        a.create-record:hover {
+            background-color: #ffcc99; /* Highlighted button */
+            color: #1e1e1e; /* Black text on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Your BMI Records</h1>
+    <nav>
+        <a href="{% url 'bmi_records' %}">BMI Chart</a>
+        <a href="{% url 'astronaut_dashboard' %}">Dashboard</a>
+        <a href="{% url 'mission_list' %}">Missions</a>
+    </nav>
+
+    <div class="record-container">
+        {% for record in records %}
+        <div class="record-item">
+            <span class="record-info">
+                Age: {{ record.age }}, BMI: {{ record.bmi|floatformat:2 }}, Date: {{ record.recorded_at }}
+            </span>
+            <span>
+                <a href="{% url 'bmi_update' record.pk %}" style="color: #ffcc99; margin-right: 10px;">Edit</a>
+                <a href="{% url 'bmi_delete' record.pk %}" style="color: #f5f5dc;">Delete</a>
+            </span>
+        </div>
+        {% empty %}
+        <p style="text-align: center; color: #ccc;">No BMI records available.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'bmi_create' %}" class="create-record">Add New BMI Record</a>
+</body>
+</html>

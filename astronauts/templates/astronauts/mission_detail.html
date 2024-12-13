@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mission Detail</title>
+</head>
+<body>
+    <h1>{{ mission.name }}</h1>
+    <p><strong>Start Date:</strong> {{ mission.start_date }}</p>
+    <p><strong>End Date:</strong> {{ mission.end_date }}</p>
+    <p><strong>Objectives:</strong> {{ mission.objectives }}</p>
+    <p><strong>Status:</strong> {{ mission.status }}</p>
+    <a href="{% url 'mission_update' mission.pk %}">Edit</a> |
+    <a href="{% url 'mission_delete' mission.pk %}">Delete</a>
+    <a href="{% url 'mission_list' %}">Back to List</a>
+</body>
+</html>
